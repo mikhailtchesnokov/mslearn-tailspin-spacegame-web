@@ -17,6 +17,11 @@ steps:
   inputs:
     version: '$(dotnetSdkVersion)'
 
+- task: UseNode@1
+  displayName: 'Use Node.js 16.x'
+  inputs:
+    version: '16.x'
+
 - task: Npm@1
   displayName: 'Run npm install'
   inputs:
@@ -44,6 +49,14 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: 'test'
+    projects: '**/*.Tests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
+    publishTestResults: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
